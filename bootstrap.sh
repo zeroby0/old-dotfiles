@@ -12,6 +12,7 @@ function doIt() {
 	printf "finished copying files. Sourcing.."
 	source ~/.bash_profile;
 	printf "done."
+	printf "You'll need GPG to sign commits if using .gitconfig provided with this"
 }
 
 if [ "$1" == "--force" -o "$1" == "-f" ]; then

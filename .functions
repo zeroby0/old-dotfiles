@@ -29,13 +29,15 @@ function mx(){
 #opens vault
 # this is my vault, you may not have it.
 # fortknox vault powered by python can be downloaded from github.com/7andahalf
-
+# commented out
+:'
 function vl(){
     prev=pwd
     cd /Users/Aravind/mydocs/stf
     python fortknox.py
     cd prev
 }
+'
 
 
 # my cheat sheet
@@ -43,6 +45,10 @@ function hl(){
     echo "-> xd(a, s, d, f)"
     echo "-> mk = mkdir + cd"
     echo "-> mx = touch + open"
+    echo "-> extract <file-name>"
+    echo "-> server : Python HTTP server"
+    echo "-> s: opens in sublime"
+    echo "-> calc: simple calculator"
     
 }
 

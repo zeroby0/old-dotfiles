@@ -16,7 +16,7 @@ alias dt="cd ~/Desktop"
 alias odl='open $HOME/Downloads/'
 alias ohm='open $HOME'
 alias owk='open $HOME/work'
-alias omd='open $HOME/mydocs'
+# alias omd='open $HOME/mydocs'
 alias odc='open $HOME/Documents'
 
 # Enable aliases to be sudo’ed
