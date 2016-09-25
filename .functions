@@ -1,0 +1,190 @@
+#!/usr/bin/env bash
+# echo "functions sourced"
+
+# Simple calculator
+function addtoarray () { var="$1"; shift 1; eval "$var+=($(printf "'%s' " "$@"))"; }
+
+#make a dir and enter it
+function mk(){
+    if [ -f $1 ] ; then
+        echo "usage: mk <dir-name>"
+    else
+        mkdir -p "$1"
+        cd "$1"
+        return
+    fi
+}
+
+#creates a file using touch and opens it
+function mx(){
+    if [ -f $1 ] ; then
+        echo "usage: mx <file-name>"
+    else
+        touch "$1"
+        open "$1"
+        return
+    fi
+}
+
+#opens vault
+# this is my vault, you may not have it.
+# fortknox vault powered by python can be downloaded from github.com/7andahalf
+
+function vl(){
+    prev=pwd
+    cd /Users/Aravind/mydocs/stf
+    python fortknox.py
+    cd prev
+}
+
+
+# my cheat sheet
+function hl(){
+    echo "-> xd(a, s, d, f)"
+    echo "-> mk = mkdir + cd"
+    echo "-> mx = touch + open"
+    
+}
+
+function extract()      # Handy Extract Program
+{
+    if [ -f $1 ] ; then
+        case $1 in
+            *.tar.bz2)   tar xvjf $1     ;;
+            *.tar.gz)    tar xvzf $1     ;;
+            *.bz2)       bunzip2 $1      ;;
+            *.rar)       unrar x $1      ;;
+            *.gz)        gunzip $1       ;;
+            *.tar)       tar xvf $1      ;;
+            *.tbz2)      tar xvjf $1     ;;
+            *.tgz)       tar xvzf $1     ;;
+            *.zip)       unzip $1        ;;
+            *.Z)         uncompress $1   ;;
+            *.7z)        7z x $1         ;;
+            *)           echo "'$1' cannot be extracted via >extract<" ;;
+        esac
+    else
+        echo "'$1' is not a valid file!"
+    fi
+}
+
+# Creates an archive (*.tar.gz) from given directory.
+function maketar() { tar cvzf "${1%%/}.tar.gz"  "${1%%/}/"; }
+
+# Create a ZIP archive of a file or folder.
+function makezip() { zip -r "${1%%/}.zip" "$1" ; }
+
+# Make your directories and files access rights sane.
+function sanitize() { chmod -R u=rwX,g=rX,o= "$@" ;}
+
+# cd into dirs in finder with xda, xds...
+# for OS X and Mac OS only
+#xda = xd 1, xds = xd 2..
+#xd n; cd s terminal to nth windows in terminal
+#xda = xd1, xds =xd2
+function xd() { 
+	if [ -f $1 ] ; then
+		xd 1
+	else
+		#creating a file and sourcing it. 
+		xdcmd="\$(osascript -e 'tell app \"Finder\" to return the POSIX path of (target of window $1 as alias)')"
+		#creating in home, to avoid permission issues
+		echo -e "cd \"$xdcmd\"" > ~/.myscripts/.xdhlscript_12345
+
+		#sourcing because parent returns to original dir after child is completed
+		. ~/.myscripts/.xdhlscript_12345
+		rm ~/.myscripts/.xdhlscript_12345
+	fi
+}
+
+
+# Determine size of a file or total size of a directory
+function fs() {
+	if du -b /dev/null > /dev/null 2>&1; then
+		local arg=-sbh;
+	else
+		local arg=-sh;
+	fi
+	if [[ -n "$@" ]]; then
+		du $arg -- "$@";
+	else
+		du $arg .[^.]* ./*;
+	fi;
+}
+
+# Use Git’s colored diff when available
+hash git &>/dev/null;
+if [ $? -eq 0 ]; then
+	function diff() {
+		git diff --no-index --color-words "$@";
+	}
+fi;
+
+# Start an HTTP server from a directory, optionally specifying the port
+function server() {
+	local port="${1:-8000}";
+	sleep 1 && open "http://localhost:${port}/" &
+	# Set the default Content-Type to `text/plain` instead of `application/octet-stream`
+	# And serve everything as UTF-8 (although not technically correct, this doesn’t break anything for binary files)
+	python -c $'import SimpleHTTPServer;\nmap = SimpleHTTPServer.SimpleHTTPRequestHandler.extensions_map;\nmap[""] = "text/plain";\nfor key, value in map.items():\n\tmap[key] = value + ";charset=UTF-8";\nSimpleHTTPServer.test();' "$port";
+}
+
+
+# Start a PHP server from a directory, optionally specifying the port
+# (Requires PHP 5.4.0+.)
+function phpserver() {
+	local port="${1:-4000}";
+	local ip=$(ipconfig getifaddr en1);
+	sleep 1 && open "http://${ip}:${port}/" &
+	php -S "${ip}:${port}";
+}
+
+# `s` with no arguments opens the current directory in Sublime Text, otherwise
+# opens the given location
+function s() {
+	if [ $# -eq 0 ]; then
+		subl .;
+	else
+		subl "$@";
+	fi;
+}
+
+# `a` with no arguments opens the current directory in Atom Editor, otherwise
+# opens the given location
+function a() {
+	if [ $# -eq 0 ]; then
+		atom .;
+	else
+		atom "$@";
+	fi;
+}
+
+# `o` with no arguments opens the current directory, otherwise opens the given
+# location
+function o() {
+	if [ $# -eq 0 ]; then
+		open .;
+	else
+		open "$@";
+	fi;
+}
+
+function calc() {
+	local result="";
+	result="$(printf "scale=10;$*\n" | bc --mathlib | tr -d '\\\n')";
+	#                       └─ default (when `--mathlib` is used) is 20
+	#
+	if [[ "$result" == *.* ]]; then
+		# improve the output for decimal numbers
+		printf "$result" |
+		sed -e 's/^\./0./'        `# add "0" for cases like ".5"` \
+		    -e 's/^-\./-0./'      `# add "0" for cases like "-.5"`\
+		    -e 's/0*$//;s/\.$//';  # remove trailing zeros
+	else
+		printf "$result";
+	fi;
+	printf "\n";
+
+}
+
+
