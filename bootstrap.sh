@@ -9,6 +9,8 @@ function doIt() {
 	cp .bash_prompt ~/.bash_prompt
 	cp .gitignore ~/.gitignore
 	cp .gitconfig ~/.gitconfig
+	cp subl ~/.myscripts/subl
+	cp bootstrap.sh ~/.myscripts/bootstrap.sh
 	printf "finished copying files. Sourcing.."
 	source ~/.bash_profile;
 	printf "done."
