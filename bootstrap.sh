@@ -2,13 +2,13 @@
 # Aravind Reddy V. aravindvoggu.in
 
 function doIt() {
-	mv -f .bash_profile ~/.bash_profile
-	mv -f .functions ~/.functions
-	mv -f .exports ~/.exports
-	mv -f .aliases ~/.aliases
-	mv -f .bash_prompt ~/.bash_prompt
-	mv -f .gitignore ~/.gitignore
-	mv -f .gitconfig ~/.gitconfig
+	cp .bash_profile ~/.bash_profile
+	cp .functions ~/.functions
+	cp .exports ~/.exports
+	cp .aliases ~/.aliases
+	cp .bash_prompt ~/.bash_prompt
+	cp .gitignore ~/.gitignore
+	cp .gitconfig ~/.gitconfig
 	printf "finished copying files. Sourcing.."
 	source ~/.bash_profile;
 	printf "done."
