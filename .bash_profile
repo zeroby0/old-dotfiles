@@ -2,6 +2,9 @@
 # Aravind Reddy V. aravindvoggu.in
 export PATH="$HOME/.myscripts:$PATH";
 
+# remove duplicates in path
+PATH=$(echo "$PATH" | awk -v RS=':' -v ORS=":" '!a[$1]++{if (NR > 1) printf ORS; printf $a[$1]}')
+
 # Load the shell dotfiles, and then some:
 # * ~/.path can be used to extend `$PATH`.
 # * ~/.extra can be used for other settings you don’t want to commit.
